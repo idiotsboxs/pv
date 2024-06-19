@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<h:head>
+</h:head>
+
+<h:body onload="loadCenterLayout()">
+
+	<p:layout style="min-width:400px;min-height:200px;" fullPage="true">
+		<p:layoutUnit position="center" id="subLayout">
+			<div id="page" align="center">
+				<div id="header-container">
+					<div id="header" align="center">
+						<ui:insert name="header">
+							<ui:include src="../header.xhtml" />
+						</ui:insert>
+					</div>
+				</div>
+				<h:form id="form">
+					<h:panelGrid columns="1">
+						<h:outputLabel
+							value="Usuario: #{cajaManage.usuario.nombre} #{cajaManage.usuario.paterno} #{cajaManage.usuario.materno}" />
+					</h:panelGrid>
+
+					<h:outputStylesheet library="css" name="style.css" />
+					<h:outputScript name="utils.js" library="js" />
+					<p:panel header="Movimientos Caja" footer="Movimientos"
+						style="margin-bottom:20px" toggleable="true"
+						toggleOrientation="vertical">
+
+						<h:panelGrid columns="2">
+
+							<h:outputLabel value="Movimiento" />
+							<h:selectOneMenu value="#{cajaManage.caja.catMovCaja.idMovimiento}"
+								styleClass="texto" id="movimiento">
+								<f:selectItems value="#{cajaManage.catCaja}" var="c"
+									itemValue="#{c.idMovimiento}" itemLabel="#{c.descripcion}">
+								</f:selectItems>
+							</h:selectOneMenu>
+
+							<h:outputLabel value="Monto" />
+							<h:inputText value="#{cajaManage.caja.monto}" id="monto"
+								styleClass="texto" />
+
+							<h:outputLabel value="Comentario" />
+							<h:inputTextarea value="#{cajaManage.caja.comentario}"
+								styleClass="texto" />
+
+							<h:commandButton value="Guardar" styleClass="btn"
+								actionListener="#{cajaManage.guardar}" />
+
+						</h:panelGrid>
+
+					</p:panel>
+
+
+
+				</h:form>
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

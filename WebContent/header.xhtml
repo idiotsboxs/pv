@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<h:head>
+
+</h:head>
+<h:body>
+	<ui:composition>
+		<h:form>
+			<p:menubar>
+				<p:menuitem value="Home" icon="ui-icon-home" />
+				<p:submenu label="Mostrador">
+					<p:menuitem value="Venta" url="../faces/xhtml/venta.xhtml" />
+					<p:menuitem value="Devolucion" url="../faces/xhtml/devolucion.xhtml" />
+				</p:submenu>
+				<p:menuitem value="Buscador" url="../faces/xhtml/buscador.xhtml" />
+				<p:submenu label="Administracion" icon="ui-icon-gear">
+					<p:menuitem value="Inventrario" url="../faces/xhtml/producto.xhtml"></p:menuitem>
+					<p:menuitem value="Arqueo" url="../faces/xhtml/Arqueo.xhtml"></p:menuitem>
+					<p:menuitem value="Compras" url="../faces/xhtml/compras.xhtml"></p:menuitem>
+					<p:menuitem value="Caja" url="../faces/xhtml/movimientoCaja.xhtml"></p:menuitem>
+				</p:submenu>
+				<p:submenu label="Reportes" icon="ui-icon-document">
+					<p:menuitem value="Ventas por día"
+						url="../faces/xhtml/ventasReporte.xhtml"></p:menuitem>
+					<p:menuitem value="Faltantes"
+						url="../faces/xhtml/faltantesReporte.xhtml"></p:menuitem>
+				</p:submenu>
+
+			</p:menubar>
+		</h:form>
+	</ui:composition>
+</h:body>
+</html>

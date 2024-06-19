@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+
+	<title>Arqueo</title>
+	<h:outputStylesheet library="css" name="style.css" />
+	<h:outputScript name="menu.js" library="js" />
+	<h:outputScript name="utils.js" library="js" />
+</h:head>
+<h:body onload="loadCenterLayout()">
+
+	<p:layout style="min-width:400px;min-height:200px;" fullPage="true">
+		<p:layoutUnit position="center" id="subLayout">
+			<div id="page">
+				<div id="header-container">
+					<div id="header">
+						<ui:insert name="header">
+							<ui:include src="../header.xhtml" />
+						</ui:insert>
+					</div>
+				</div>
+
+				<h:form>
+					<p:panel id="arqueo" header="Arqueo" footer="Corte de Venta"
+						style="margin-bottom:20px" toggleable="true"
+						toggleOrientation="vertical">
+						<t:panelGrid columns="4" width="800px" align="center">
+
+							<p:outputLabel for="fechaCorte" value="Fecha Corte:" />
+							<p:calendar id="fechaCorte" value="#{arqueoManage.fechaLiq}" />
+							<h:outputLabel value="Venta del dia:"></h:outputLabel>
+							<h:outputLabel value="#{arqueoManage.ventaDia}"
+								style="font-size:24px;">
+								<f:convertNumber maxFractionDigits="2" groupingUsed="true"
+									currencySymbol="$" maxIntegerDigits="6" type="currency" />
+							</h:outputLabel>
+							<h:commandButton value="Generar Corte"
+								actionListener="#{arqueoManage.generaCorte}" styleClass="btn"></h:commandButton>
+							<h:inputHidden></h:inputHidden>
+							<h:outputLabel value="Movimiento Caja:"></h:outputLabel>
+							<h:outputLabel value="#{arqueoManage.totalCaja}"
+								style="font-size:24px;">
+								<f:convertNumber maxFractionDigits="2" groupingUsed="true"
+									currencySymbol="$" maxIntegerDigits="6" type="currency" />
+							</h:outputLabel>
+
+							<t:panelGroup colspan="4">
+								<h:commandButton value="Generar Cierre"
+									onclick="return confirmCierre();"
+									actionListener="#{arqueoManage.cierreDia}" styleClass="btn"
+									style="padding: 12px 380px;"></h:commandButton>
+							</t:panelGroup>
+							<t:panelGroup id="col2" colspan="4"
+								style="width:95%;margin-left:auto;margin-right:auto;">
+								<t:panelGrid columns="4">
+									<p:panel id="opnl" header="Ventas por Categoria">
+										<p:outputLabel value="Categorias: "></p:outputLabel>
+
+										<h:selectOneMenu
+											value="#{arqueoManage.catCategoria.idCategoria}"
+											styleClass="texto" id="categoria">
+											<f:ajax render="listaVenta fechaCorte totalCancentrado"
+												event="change" listener="#{arqueoManage.generaConcentrado}"
+												execute="@all" />
+											<f:selectItems value="#{arqueoManage.listaCategoria}" var="c"
+												itemValue="#{c.idCategoria}" itemLabel="#{c.descripcion}">
+											</f:selectItems>
+										</h:selectOneMenu>
+
+										<p:outputLabel value="Total Venta: "></p:outputLabel>
+										<p:outputLabel id="totalCancentrado"
+											value="#{arqueoManage.concentrado.total}"
+											style="font-size:24px;">
+											<f:convertNumber maxFractionDigits="2" groupingUsed="true"
+												currencySymbol="$" maxIntegerDigits="4" type="currency" />
+										</p:outputLabel>
+
+
+										<t:panelGroup id="col1" colspan="4">
+
+											<p:dataTable value="#{arqueoManage.concentrado.ventas}"
+												var="v" id="listaVenta" styleClass="tablebg"
+												headerClass="header" footerClass="footer"
+												columnClasses="text,number,number,number"
+												rowClasses="graybg,whitebg" border="0" cellpadding="5"
+												cellspacing="0" style="width:800px;height:300px"
+												paginator="true" rows="10"
+												paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+												<p:column>
+													<f:facet name="header">Codigo</f:facet>
+    			  						     #{v.catProductos.codigoBarras}    				
+    		    					</p:column>
+												<p:column>
+													<f:facet name="header">Producto</f:facet>
+    			  						     #{v.catProductos.descProducto}    				
+    		    					</p:column>
+												<p:column>
+													<f:facet name="header">Cantidad</f:facet>
+    			  						     #{v.cantidad}    				
+    		    					</p:column>
+												<p:column>
+													<f:facet name="header">Total</f:facet>
+    			  						     #{v.subTotal}    				
+    		    					</p:column>
+
+											</p:dataTable>
+										</t:panelGroup>
+									</p:panel>
+								</t:panelGrid>
+							</t:panelGroup>
+						</t:panelGrid>
+					</p:panel>
+				</h:form>
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

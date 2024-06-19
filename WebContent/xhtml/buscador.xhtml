@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<h:head>
+</h:head>
+
+<h:body onload="loadCenterLayout()">
+
+	<p:layout style="min-width:400px;min-height:200px;" fullPage="true">
+		<p:layoutUnit position="center" id="subLayout">
+			<h:form>
+				<h:outputStylesheet library="css" name="style.css" />
+				<h:outputScript name="utils.js" library="js" />
+				<p:panel header="Buscador" footer="Articulo"
+					style="margin-bottom:20px" toggleable="true"
+					toggleOrientation="vertical">
+					<h:panelGrid columns="3">
+						<h:outputLabel value="Articulo" />
+						<t:inputText forceId="true" id="txtTexto"
+							value="#{invProductoManage.catProductos.descProducto}" />
+						<h:commandButton value="Buscar"
+							actionListener="#{invProductoManage.articuloLike}"
+							id="btn_buscar" styleClass="btn" />
+					</h:panelGrid>
+					<t:panelGroup id="tablaVenta" colspan="3">
+						<p:scrollPanel mode="native" style="width:800px;height:300px">
+							<h:dataTable value="#{invProductoManage.productos}" var="o"
+								id="listaArticulos" styleClass="tablebg" headerClass="header"
+								footerClass="footer" columnClasses="text,number,number,number"
+								rowClasses="whitebg,graybg" border="0" cellpadding="5"
+								cellspacing="0" width="100%">
+
+								<h:column>
+									<f:facet name="header">Codigo Barras</f:facet>
+									<h:commandLink value="#{o.codigoBarras}"
+										onclick="SetArticulo(#{o.codigoBarras})"></h:commandLink>
+
+								</h:column>
+								<h:column>
+									<f:facet name="header">Descripcion</f:facet>
+    			  				 #{o.descProducto}    				
+    		    		</h:column>
+								<h:column>
+									<f:facet name="header">cantidad</f:facet>
+    			   				#{o.cantidad}    				
+    		    		</h:column>
+								<h:column>
+									<f:facet name="header">Precio</f:facet>
+									<h:outputText value="#{o.PUVenta}">
+										<f:convertNumber maxFractionDigits="2" groupingUsed="true"
+											currencySymbol="$" maxIntegerDigits="4" type="currency" />
+									</h:outputText>
+								</h:column>
+								<h:column>
+									<f:facet name="header">Proveedor</f:facet>
+    			   				#{o.catProveedor.proveedor}    				
+    		    		</h:column>
+								<h:column>
+									<f:facet name="header">Categoria</f:facet>
+    			   				#{o.catCategoria.descripcion}    				
+    		    		</h:column>
+								<h:column>
+									<f:facet name="header">Surtes</f:facet>
+    			   				#{o.idTipoAbastecimiento}    				
+    		    		</h:column>
+
+							</h:dataTable>
+						</p:scrollPanel>
+					</t:panelGroup>
+				</p:panel>
+			</h:form>
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

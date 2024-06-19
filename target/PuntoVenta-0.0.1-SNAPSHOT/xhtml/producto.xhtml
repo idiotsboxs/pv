@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+
+<h:head>
+	<title>Inventario y Articulos</title>
+
+	<h:outputStylesheet library="css" name="style.css" />
+	<h:outputScript name="menu.js" library="js" />
+	<h:outputScript name="utils.js" library="js" />
+
+</h:head>
+<h:body
+	onload="loadCenterLayout(); document.getElementById('form:codBarra').focus();">
+
+	<p:layout style="min-width:400px;min-height:200px;" fullPage="true">
+		<p:layoutUnit position="center" id="subLayout">
+			<div id="page" align="center">
+				<div id="header-container">
+					<div id="header">
+						<ui:insert name="header">
+							<ui:include src="../header.xhtml" />
+						</ui:insert>
+					</div>
+				</div>
+				<h:form id="form">
+					<h:panelGrid columns="1">
+						<h:outputLabel
+							value="Usuario: #{invProductoManage.usuario.nombre} #{invProductoManage.usuario.paterno} #{invProductoManage.usuario.materno}" />
+					</h:panelGrid>
+					<p:panel id="basic" header="Basic" footer="Productos"
+						style="margin-bottom:20px">
+						<h:panelGrid columns="2">
+							<h:outputLabel value="Codigo" />
+							<h:panelGrid columns="2">
+								<h:inputText
+									value="#{invProductoManage.catProductos.codigoBarras}"
+									label="idProducto" id="first" required="false" disabled="false"
+									styleClass="texto" onkeyup="numericInput(this);">									
+									<f:ajax event="blur"
+										listener="#{invProductoManage.obtenerProducto}"
+										render="producto  medida proveedor categoria cantidad factor puCompra puVenta minimo iva puMayoreo psMayoreo btn_editar btn_guardar abastecimiento"></f:ajax>
+
+								</h:inputText>
+								<h:button
+									onclick=" window.open('../faces/xhtml/buscador.xhtml','Buscador Articulo', 'height=300,width=700'); return false;"
+									styleClass="btn" value="Producto"></h:button>
+							</h:panelGrid>
+
+							<h:outputLabel value="Desripcion Producto" />
+							<h:inputText
+								value="#{invProductoManage.catProductos.descProducto}"
+								label="producto" id="producto" required="true"
+								styleClass="texto">
+							</h:inputText>
+							<h:outputLabel value="Unidad Medida" />
+							<h:selectOneMenu
+								value="#{invProductoManage.catProductos.catUnidadMedida.idUnidadMedida}"
+								styleClass="texto" id="medida">
+								<f:selectItems value="#{invProductoManage.unidadMedida}" var="c"
+									itemValue="#{c.idUnidadMedida}"
+									itemLabel="#{c.desUnidadMedida}">
+								</f:selectItems>
+							</h:selectOneMenu>
+							<h:outputLabel value="Proveedor" />
+							<h:selectOneMenu
+								value="#{invProductoManage.catProductos.catProveedor.idProveedor}"
+								styleClass="texto" id="proveedor">
+								<f:selectItems value="#{invProductoManage.catProveedores}"
+									var="p" itemValue="#{p.idProveedor}" itemLabel="#{p.proveedor}">
+								</f:selectItems>
+							</h:selectOneMenu>
+							<h:outputLabel value="Categoria" />
+							<h:selectOneMenu
+								value="#{invProductoManage.catProductos.catCategoria.idCategoria}"
+								styleClass="texto" id="categoria">
+								<f:selectItems value="#{invProductoManage.catCategorias}"
+									var="c" itemValue="#{c.idCategoria}"
+									itemLabel="#{c.descripcion}">
+								</f:selectItems>
+							</h:selectOneMenu>
+							<h:outputLabel value="Cantidad" />
+							<h:inputText value="#{invProductoManage.catProductos.cantidad}"
+								label="cantidad" id="cantidad" required="true"
+								styleClass="texto" onkeyup="numericInput(this);">
+							</h:inputText>
+							<h:outputLabel value="Lo surtes?:" />
+							<h:selectBooleanCheckbox value="#{invProductoManage.abastecimiento}" id="abastecimiento">
+							</h:selectBooleanCheckbox>							
+							<h:outputLabel value="Factor" />
+							<h:inputText value="#{invProductoManage.catProductos.factor}"
+								label="factor" id="factor" required="true" styleClass="texto"
+								onkeyup="numericInput(this);">
+							</h:inputText>
+							<h:outputLabel value="Precio U. Compra" />
+							<h:inputText value="#{invProductoManage.catProductos.PUCompra}"
+								label="puCompra" id="puCompra" required="true"
+								styleClass="texto" onchange="decimalInput(this);">
+							</h:inputText>
+							<h:outputLabel value="Precio U. Venta" />
+							<h:inputText value="#{invProductoManage.catProductos.PUVenta}"
+								label="puVenta" id="puVenta" required="true" styleClass="texto"
+								onchange="decimalInput(this);">
+							</h:inputText>
+							<h:outputLabel value="Minimo" />
+							<h:inputText value="#{invProductoManage.catProductos.minimo}"
+								label="minimo" id="minimo" required="true" styleClass="texto">
+							</h:inputText>
+							<h:outputLabel value="I.V.A." />
+							<h:inputText value="#{invProductoManage.catProductos.iva}"
+								label="iva" id="iva" required="true" styleClass="texto"
+								onchange="numericInput(this);">
+							</h:inputText>
+							<h:outputLabel value="Precio U. Mayoreo" />
+							<h:inputText value="#{invProductoManage.catProductos.PUMayoreo}"
+								label="puMayoreo" id="puMayoreo" required="true"
+								styleClass="texto" onchange="decimalInput(this);">
+							</h:inputText>
+							<h:outputLabel value="Precio S. Mayoreo" />
+							<h:inputText value="#{invProductoManage.catProductos.PSMayoreo}"
+								label="psMayoreo" id="psMayoreo" required="true"
+								styleClass="texto" onchange="decimalInput(this);">
+							</h:inputText>
+							<h:commandButton actionListener="#{invProductoManage.guardar}"
+								value="Guardar" id="btn_guardar" styleClass="btn"
+								disabled="#{invProductoManage.catProductos.idProducto != null}"></h:commandButton>
+							<h:commandButton actionListener="#{invProductoManage.editar}"
+								value="Editar" id="btn_editar" styleClass="btn"
+								disabled="#{invProductoManage.catProductos.idProducto == null}"></h:commandButton>
+
+						</h:panelGrid>
+					</p:panel>
+				</h:form>
+
+
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+
+</h:body>
+</html>

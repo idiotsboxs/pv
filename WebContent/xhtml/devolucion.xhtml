@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+<h:head>
+
+	<title>Devolucion</title>
+	<h:outputStylesheet library="css" name="style.css" />
+	<h:outputScript name="menu.js" library="js" />
+	<h:outputScript name="utils.js" library="js" />
+
+</h:head>
+<h:body onload="loadCenterLayout()">
+
+	<p:layout style="min-width:400px;min-height:200px;" fullPage="true">
+		<p:layoutUnit position="center" id="subLayout">
+			<div id="page" align="center">
+				<div id="header-container">
+					<div id="header">
+
+						<ui:insert name="header">
+							<ui:include src="../header.xhtml" />
+						</ui:insert>
+
+					</div>
+				</div>
+				<h:form id="form">
+					<h:panelGrid columns="1">
+						<h:outputLabel
+							value="Usuario: #{devolucionManage.usuario.nombre} #{devolucionManage.usuario.paterno} #{devolucionManage.usuario.materno}" />
+					</h:panelGrid>
+					<p:panel id="basic" header="Devolucion"
+						footer="Devolucion de mostrador" style="margin-bottom:20px"
+						toggleable="true" toggleOrientation="vertical">
+
+						<t:panelGrid id="main_grid" columns="2" cellpadding="0"
+							cellspacing="0">
+							<t:panelGroup id="col1">
+								<t:panelGrid columns="3" id="articulos" columnClasses="text">
+									<h:outputLabel value="Codigo Barras" />
+									<t:panelGrid columns="2">
+										<h:inputText forceId="true"
+											value="#{devolucionManage.productos.codigoBarras}"
+											label="idProducto" id="first" required="false"
+											disabled="false" styleClass="texto"
+											onblur="numericNull(this); return validaBlur(this);"
+											onkeyup="numericInput(this);">
+
+											<f:ajax event="blur"
+												listener="#{devolucionManage.obtenerProducto}"
+												render="venta  listaVenta productoH"></f:ajax>
+
+
+										</h:inputText>
+
+										<h:button
+											onclick="window.open('../faces/xhtml/buscador.xhtml','Buscador Articulo', 'height=300,width=700'); return false;"
+											styleClass="btn_red" value="Articulos" id="btnBuscar"
+											onfocus="document.getElementById('form:first').value = '';document.getElementById('form:first').focus();">
+										</h:button>
+									</t:panelGrid>
+									<t:panelGroup id="col4" style="margin-left: 100px">
+										<h:outputLabel value="Venta:" style="font-size:34px;" />
+										<h:outputLabel id="venta"
+											value="#{devolucionManage.ventas.total}"
+											style="font-size:54px;">
+											<f:convertNumber maxFractionDigits="2" groupingUsed="true"
+												currencySymbol="$" maxIntegerDigits="4" type="currency" />
+										</h:outputLabel>
+									</t:panelGroup>
+								</t:panelGrid>
+								<t:panelGroup id="col5" colspan="3">
+									<h:commandButton value="Guardar" id="save"
+										style="padding: 12px 375px;"
+										actionListener="#{devolucionManage.guardar}"
+										styleClass="btn_red" onclick="return confirmSale();"></h:commandButton>
+								</t:panelGroup>
+							</t:panelGroup>
+
+							<h:outputLabel></h:outputLabel>
+							<t:panelGroup id="tablaVenta" colspan="2">
+								<p:scrollPanel mode="native" style="width:800px;height:300px">
+									<h:dataTable value="#{devolucionManage.catListVentas}" var="o"
+										id="listaVenta" styleClass="tablebg" headerClass="header"
+										footerClass="footer" columnClasses="text,number,number,number"
+										rowClasses="whitebg,graybg" border="0" cellpadding="5"
+										cellspacing="0"
+										style="width:95%;margin-left:auto;margin-right:auto;">
+										<h:column>
+											<f:facet name="header">Codigo</f:facet>
+    			   						#{o.catProductos.idProducto}    				
+    		    					</h:column>
+										<h:column>
+											<f:facet name="header">Descripcion</f:facet>
+    			   						#{o.catProductos.descProducto}    				
+    		    					</h:column>
+										<h:column>
+											<f:facet name="header">cantidad</f:facet>
+
+
+											<h:inputText value="#{o.cantidad}" forceId="true"
+												id="canitdadTablePeso" size="5"
+												onchange="document.getElementById('form:focusEliminar').value='1';"
+												onblur="numericNull(this);  return validaBlur(this); ">
+												<f:ajax event="blur"
+													listener="#{devolucionManage.recalcularVenta}"
+													render=":form:venta :form:first :form:tablaVenta"></f:ajax>
+											</h:inputText>
+
+
+
+										</h:column>
+										<h:column>
+											<f:facet name="header"></f:facet>
+										#{o.catProductos.catUnidadMedida.desUnidadMedida}
+									</h:column>
+										<h:column>
+											<f:facet name="header">Precio</f:facet>
+											<h:outputText value="#{o.PUnitario}">
+												<f:convertNumber maxFractionDigits="2" groupingUsed="true"
+													currencySymbol="$" maxIntegerDigits="4" type="currency" />
+											</h:outputText>
+										</h:column>
+										<h:column>
+											<f:facet name="header">Impuesto</f:facet>
+											<h:outputText value="#{o.catProductos.iva}%">
+
+											</h:outputText>
+										</h:column>
+										<h:column>
+											<f:facet name="header">Sub Total</f:facet>
+											<h:outputText value="#{o.subTotal}">
+												<f:convertNumber maxFractionDigits="2" groupingUsed="true"
+													currencySymbol="$" maxIntegerDigits="4" type="currency" />
+											</h:outputText>
+										</h:column>
+										<h:column>
+											<f:facet name="header">Eliminar</f:facet>
+											<h:commandButton id="delete" value="Eliminar"
+												actionListener="#{devolucionManage.eliminar}"
+												onkeyup="document.getElementById('form:btnBuscar').focus();"
+												onfocus="focusEliminar('form:focusEliminar')"
+												styleClass="btn_red">
+												<f:param name="producto"
+													value="#{o.catProductos.idProducto}"></f:param>
+											</h:commandButton>
+										</h:column>
+									</h:dataTable>
+								</p:scrollPanel>
+							</t:panelGroup>
+							<t:panelGroup id="col2" colspan="3" style="margin-left: 500px">
+								<h:inputHidden value="0" id="focusEliminar"></h:inputHidden>
+								<h:inputHidden
+									value="#{devolucionManage.productos.descProducto}"
+									id="productoH"></h:inputHidden>
+							</t:panelGroup>
+
+						</t:panelGrid>
+
+					</p:panel>
+
+
+				</h:form>
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

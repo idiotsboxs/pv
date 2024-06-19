@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<h:outputStylesheet library="css" name="style.css" />
+	<h:outputScript name="menu.js" library="js" />
+	<h:outputScript name="utils.js" library="js" />
+</h:head>
+<h:body onload="loadCenterLayout()">
+	<h:form>
+		<p:layout style="min-width:900px;min-height:200px;" fullPage="true"  >
+			<p:layoutUnit position="center" id="subLayout" >
+				<div id="page" align="center">
+					<div id="header-container">
+						<div id="header" align="center">
+							<ui:insert name="header">
+								<ui:include src="../header.xhtml" />
+							</ui:insert>
+						</div>
+					</div>
+					<p:panel id="basic" header="Reporte de faltantes" footer="Reporte"
+						style="margin-bottom:20px" toggleable="true"
+						toggleOrientation="vertical">
+						<h:panelGrid columns="4" width="80%">
+							<h:outputLabel value="Proveedor:" />
+							<h:selectOneMenu
+								value="#{faltantesManage.catProductos.catProveedor.idProveedor}"
+								styleClass="texto" id="medida">
+								<f:selectItem itemLabel="TODOS" itemValue="666"></f:selectItem>
+								<f:selectItems value="#{faltantesManage.proveedores}" var="c"
+									itemValue="#{c.idProveedor}" itemLabel="#{c.proveedor}">
+								</f:selectItems>
+							</h:selectOneMenu>
+							<h:outputLabel value="Lo surtes?:" />
+							<h:selectBooleanCheckbox value="#{faltantesManage.surte}">
+							</h:selectBooleanCheckbox>
+						</h:panelGrid>
+						<t:panelGroup id="tablaReporte" colspan="2">
+							<h:commandButton value="Generar Reporte"
+								style="padding: 12px 334px;"
+								actionListener="#{faltantesManage.obtineReporte}"
+								styleClass="btn">
+							</h:commandButton>
+						</t:panelGroup>
+
+						<p:dataTable id="tbl" var="prod"
+							value="#{faltantesManage.productos}"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+							paginator="true" rows="10" style="margin-bottom:20px">
+
+							<f:facet name="{Exporters}">
+								<h:commandLink>
+									<p:graphicImage name="image/excel.png" width="24" />
+									<p:dataExporter type="xls" target="tbl" fileName="faltantes"  />
+								</h:commandLink>
+
+								<h:commandLink>
+									<p:graphicImage name="image/pdf.png" width="24" />
+									<p:dataExporter type="pdf" target="tbl" fileName="faltantes" />
+								</h:commandLink>
+
+								<h:commandLink>
+									<p:graphicImage name="image/csv.png" width="24" />
+									<p:dataExporter type="csv" target="tbl" fileName="faltantes" />
+								</h:commandLink>
+
+								<h:commandLink>
+									<p:graphicImage name="image/xml.png" width="24" />
+									<p:dataExporter type="xml" target="tbl" fileName="faltantes" />
+								</h:commandLink>
+							</f:facet>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Codigo Barras" />
+								</f:facet>
+								<h:outputText value="#{prod.codigoBarras}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Descripcion" />
+								</f:facet>
+								<h:outputText value="#{prod.descProducto}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Cantidad" />
+								</f:facet>
+								<h:outputText value="#{prod.cantidad}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Minimo" />
+								</f:facet>
+								<h:outputText value="#{prod.minimo}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Factor" />
+								</f:facet>
+								<h:outputText value="#{prod.factor}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="P. Compra" />
+								</f:facet>
+								<h:outputText value="#{prod.PUCompra}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="P. Venta" />
+								</f:facet>
+								<h:outputText value="#{prod.PUVenta}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Faltante" />
+								</f:facet>
+								<h:selectBooleanCheckbox value="#{prod.faltante}" disabled="true"></h:selectBooleanCheckbox>
+							</p:column>
+						</p:dataTable>
+						<h:panelGrid columns="1">
+
+						</h:panelGrid>
+					</p:panel>
+				</div>
+			</p:layoutUnit>
+		</p:layout>
+	</h:form>
+</h:body>
+</html>

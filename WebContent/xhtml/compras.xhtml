@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+
+<h:head>
+	<title>Compras de Inventario</title>
+	<h:outputStylesheet library="css" name="style.css" />
+	<h:outputScript name="menu.js" library="js" />
+	<h:outputScript name="utils.js" library="js" />
+</h:head>
+<h:body onload="loadCenterLayoutDos()">
+
+	<div id="page" align="center">
+		<div id="header-container">
+			<div id="header" align="center">
+				<ui:insert name="header">
+					<ui:include src="../header.xhtml" />
+				</ui:insert>
+			</div>
+		</div>
+		<h:form id="form">
+			<h:panelGrid columns="1" colspan="2">
+				<h:outputLabel
+					value="Usuario: #{compraManage.usuario.nombre} #{compraManage.usuario.paterno} #{compraManage.usuario.materno}" />
+			</h:panelGrid>
+			<p:panel id="basic" header="Compras" footer="Venta de Mostrador"
+				style="margin-bottom:20px" toggleable="true"
+				toggleOrientation="vertical">
+
+				<t:panelGrid id="main_grid" columns="2" cellpadding="0"
+					cellspacing="0">
+					<t:panelGroup id="col1">
+						<t:panelGrid columns="4" id="articulos" columnClasses="text">
+							<h:outputLabel value="Codigo Barra" />
+							<h:inputText value="#{compraManage.productos.codigoBarras}"
+								label="first" id="first" required="false" disabled="false"
+								styleClass="texto"
+								onblur="numericNull(this); return validaBlur(this);"
+								onkeyup="numericInput(this);">
+								<f:ajax event="blur" listener="#{compraManage.addCompra}"
+									render="listaCompras subtotal impuesto total"></f:ajax>
+							</h:inputText>
+							<h:outputLabel value="subtotal: " />
+							<h:outputLabel value="#{compraManage.compras.subTotal}"
+								id="subtotal" style="font-size:24px;">
+								<f:convertNumber maxFractionDigits="2" groupingUsed="true"
+									currencySymbol="$" maxIntegerDigits="4" type="currency" />
+							</h:outputLabel>
+							<h:inputHidden></h:inputHidden>
+							<h:inputHidden></h:inputHidden>
+							<h:outputLabel value="Impuesto: " />
+							<h:outputLabel value="#{compraManage.compras.iva}" id="impuesto"
+								style="font-size:24px;">
+								<f:convertNumber maxFractionDigits="2" groupingUsed="true"
+									currencySymbol="$" maxIntegerDigits="4" type="currency" />
+							</h:outputLabel>
+							<h:inputHidden></h:inputHidden>
+							<h:inputHidden></h:inputHidden>
+
+							<h:outputLabel value="total" />
+							<h:outputLabel value="#{compraManage.compras.total}"
+								label="total" id="total" style="font-size:24px;">
+								<f:convertNumber maxFractionDigits="2" groupingUsed="true"
+									currencySymbol="$" maxIntegerDigits="4" type="currency" />
+							</h:outputLabel>
+
+						</t:panelGrid>
+						<t:panelGroup id="col5" colspan="2">
+							<h:commandButton value="Guardar"
+								actionListener="#{compraManage.guardar}" styleClass="btn"
+								style="padding: 12px 380px;" onclick="return confirmSale();"
+								onfocus="document.getElementById('form:first').value = '';document.getElementById('form:first').focus();"></h:commandButton>
+						</t:panelGroup>
+
+						<h:panelGrid columns="1">
+							<p:scrollPanel mode="native" style="width:800px;height:600px">
+								<h:dataTable value="#{compraManage.listCompras}" var="o"
+									id="listaCompras" styleClass="tablebg" headerClass="header"
+									footerClass="footer" columnClasses="text,number,number,number"
+									rowClasses="whitebg,graybg" border="0" cellpadding="5"
+									cellspacing="0"
+									style="width:95%;margin-left:auto;margin-right:auto;">
+									<h:column>
+										<f:facet name="header">Codigo</f:facet>
+    			   #{o.catProductos.idProducto}    				
+    		    </h:column>
+									<h:column>
+										<f:facet name="header">Descripcion</f:facet>
+    			   #{o.catProductos.descProducto}    				
+    		    </h:column>
+									<h:column>
+										<f:facet name="header">Cantidad Inv.</f:facet>
+    			   #{o.catProductos.cantidad}    				
+    		    </h:column>
+									<h:column>
+										<f:facet name="header">cantidad</f:facet>
+										<h:inputText value="#{o.cantidad}" size="4">
+											<f:convertNumber maxFractionDigits="0" groupingUsed="true"
+												maxIntegerDigits="4" type="number"
+												onchange="document.getElementById('form:focusEliminar').value='1';" />
+											<f:ajax event="blur"
+												listener="#{compraManage.recalcularCompra}"
+												render=":form:subtotal :form:impuesto :form:total :form:listaCompras"></f:ajax>
+
+										</h:inputText>
+
+									</h:column>
+									<h:column>
+										<f:facet name="header">Precio C.</f:facet>
+										<h:inputText value="#{o.PCompra}" size="4"
+											onchange="document.getElementById('form:focusEliminar').value='1';">
+											<f:convertNumber maxFractionDigits="2" groupingUsed="true"
+												currencySymbol="$" maxIntegerDigits="4" type="currency" />
+											<f:ajax event="blur"
+												listener="#{compraManage.recalcularCompra}"
+												render=":form:subtotal :form:impuesto :form:total :form:listaCompras"></f:ajax>
+										</h:inputText>
+
+									</h:column>
+									<h:column>
+										<f:facet name="header">Precio V.</f:facet>
+										<h:inputText value="#{o.PVenta}" size="4"
+											onchange="document.getElementById('form:focusEliminar').value='1';">
+											<f:convertNumber maxFractionDigits="2" groupingUsed="true"
+												currencySymbol="$" maxIntegerDigits="4" type="currency" />
+											<f:ajax event="blur"
+												listener="#{compraManage.recalcularCompra}"
+												render=":form:subtotal :form:impuesto :form:total :form:listaCompras"></f:ajax>
+										</h:inputText>
+
+									</h:column>
+
+									<h:column>
+										<f:facet name="header">Sub Total</f:facet>
+										<h:outputText value="#{o.subTotal}">
+											<f:convertNumber maxFractionDigits="2" groupingUsed="true"
+												currencySymbol="$" maxIntegerDigits="4" type="currency" />
+										</h:outputText>
+									</h:column>
+									<h:column>
+										<f:facet name="header">Eliminar</f:facet>
+										<h:commandButton id="delete" value="Eliminar"
+											actionListener="#{compraManage.eliminar}"
+											onfocus="focusEliminar('form:focusEliminar')"
+											onkeyup="document.getElementById('form:first').focus();"
+											styleClass="btn_red">
+											<f:param name="producto" value="#{o.catProductos.idProducto}"></f:param>
+										</h:commandButton>
+									</h:column>
+								</h:dataTable>
+							</p:scrollPanel>
+						</h:panelGrid>
+
+					</t:panelGroup>
+				</t:panelGrid>
+			</p:panel>
+
+			<h:inputHidden value="0" id="focusEliminar"></h:inputHidden>
+
+		</h:form>
+	</div>
+
+</h:body>
+</html>
